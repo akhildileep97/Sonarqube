@@ -1,0 +1,7 @@
+sonarqube.local:80 {
+    reverse_proxy 172.18.4.2:9000
+}
+
+{$LOCALIP}:80 {
+    reverse_proxy {$CONTAINERIP}:80
+}

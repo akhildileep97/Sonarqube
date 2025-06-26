@@ -1,0 +1,39 @@
+services:
+  sonarqube:
+    container_name: sonarqube-afton
+    image: sonarqube:lts-community
+    ports:
+      - "9000:9000"
+    networks:
+      docker_net:
+        ipv4_address: 172.18.4.2
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
+  sonar-caddy:
+    container_name: sonarqube-caddy
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      docker_net:
+        ipv4_address: 172.18.4.3
+    extra_hosts:
+      - "sonarqube.local:172.18.4.2"
+
+volumes:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
+
+networks:
+  docker_net:
+    ipam:
+        driver: default
+        config:
+            - subnet: 172.18.4.0/24
